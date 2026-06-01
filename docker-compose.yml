@@ -1,0 +1,16 @@
+services:
+  test:
+    image: ubuntu:latest
+    container_name: test
+    # equivalent to -ti 
+    tty: true
+    stdin_open: true
+    command: bash
+    environment:
+      SOME_ENVIRONMENT_VAR: /run/secrets/secret_test
+    secrets:
+      - secret_test
+# Actually defining the secret from a file      
+secrets:
+  secret_test:
+    file: secrets/my_secret.txt
