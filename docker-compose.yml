@@ -1,3 +1,6 @@
+# We are going to try and build separate frontend / backend service.
+# A simple example is a site that displays your IP on a button press,
+# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a backend.
 services:
   test:
     image: ubuntu:latest
@@ -10,7 +13,34 @@ services:
       SOME_ENVIRONMENT_VAR: /run/secrets/secret_test
     secrets:
       - secret_test
+  postgres:
+    image: postgres:17.3
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: example_db
+      POSTGRES_USER_FILE: /run/secrets/POSTGRES_USER
+      POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    secrets:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    volumes:
+      postgres_data:/var/lib/postgresql/data
+  frontend:
+    image:
+      # Build context is relative to docker-compose.yml path
+      build:
+        context: ./frontend/
+        dockerfile: Dockerfile
+
 # Actually defining the secret from a file      
 secrets:
   secret_test:
     file: secrets/my_secret.txt
+  POSTGRES_USER:
+    file: secrets/postgres_user
+  POSTGRES_PASSWORD:
+    file: secrets/postgres_password
+
