@@ -1,0 +1,56 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.header {
+  padding: 40px;
+  text-align: center;
+  background: #111827;
+}
+
+.container {
+  padding: 20px;
+  display: grid;
+  justify-content: center;
+}
+
+.card {
+  background: #1f2937;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+}
+
+.btn {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.ip-box {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #0b1220;
+}
+
+.ip-label {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.ip-value {
+  font-size: 22px;
+  color: #4ade80;
+}

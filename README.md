@@ -3,8 +3,5 @@ This is an example docker template for beginners.  It will contrast a simple man
 
 # TODO
 - Rename the dockerhub repo to something more like "template", looks we have to pull and retag, we should try pushing. <DONE>
-- Run a basic python server which displays basic web page, where frontend (html/css) is isolated from server, separate containers. < 
-- Implement a database of some sort, maybe a simple form in the page that the database saves input from permanently. 
-- That should be enough for a basic workable example.  So, step 1 is figuring those without the docker setup.
-
-
+- Run a basic python server which displays basic web page, where frontend (html/css) is isolated from server, separate containers. <DONE>
+    - Right now, the goal is to have an nginx server hosting static content with HTML/CSS/JS for the frontend.  On the backend, a flask server handling requests for the IP information, and integration with Postgres to save the IP and maybe other info.

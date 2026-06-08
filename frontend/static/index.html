@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Static Frontend</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <header class="header">
+    <h1>Welcome to My Site</h1>
+  </header>
+
+  <main class="container">
+
+    <section class="card">
+      <h2>IP Checker</h2>
+      <button class="btn" id="ipBtn">Get My IP</button>
+
+      <div id="ipBox" class="ip-box" style="display:none;">
+        <div class="ip-label">Your IP address</div>
+        <div id="ipValue" class="ip-value">---</div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
