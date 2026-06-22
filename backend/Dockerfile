@@ -3,11 +3,11 @@
 FROM python:3.12-slim
 LABEL authors="Daniel Morine"
 ENV PYTHONBUFFERED=1
-WORKDIR /server
 # Bind mount requirements.txt to avoid copying
 RUN --mount=type=bind,source=requirements.txt,target=/tmp/requirements.txt \
-    pip install --requirement /tmp/requirements.txt
+    pip install --no-cache-dir --requirement /tmp/requirements.txt
 # Need to give our temporary build container backend.py
+WORKDIR /server
 COPY backend.py . 
 EXPOSE 8000
 CMD ["python3", "backend.py"] 
