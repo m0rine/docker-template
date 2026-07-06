@@ -3,6 +3,8 @@ from flask_cors import CORS
 import psycopg2
 import os
 
+print("BACKEND PY IS RUNNING")
+
 app = Flask(__name__)
 CORS(app)
 
@@ -21,15 +23,15 @@ def read_secret(path):
 # DB config (env + secrets)
 # -------------------------
 
+POSTGRES_PORT = 5432
 POSTGRES_DB = os.getenv("POSTGRES_DB", "postgres")
 POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
-POSTGRES_PORT = 5432
 
-# password comes from Docker secret file (preferred)
-POSTGRES_PASSWORD = read_secret("/run/secrets/postgres_password") \
-    or os.getenv("POSTGRES_PASSWORD", "unknown")
-POSTGRES_USER = read_secret("/run/secrets/postgres_password") \
-        or os.getenv("POSTGRES_PASSWORD", "unknown")
+# password comes from Docker secret file ONLY, or failure.  See docker compose config.
+POSTGRES_PASSWORD = read_secret("/run/secrets/POSTGRES_PASSWORD")
+POSTGRES_USER = read_secret("/run/secrets/POSTGRES_USER")
+if not POSTGRES_PASSWORD: print("Error, docker secrets file failed to read.")
+if not POSTGRES_USER: print("Error, docker secrets file failed to read.")
 
 DB_CONFIG = {
     "dbname": POSTGRES_DB,
@@ -45,7 +47,26 @@ DB_CONFIG = {
 # -------------------------
 def get_conn():
     return psycopg2.connect(**DB_CONFIG)
+# -------------------------
+# Initialize database
+# -------------------------
+def init_db():
+    conn = get_conn()
+    cur = conn.cursor()
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id SERIAL PRIMARY KEY,
+            content TEXT NOT NULL,
+            created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        );
+    """)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    print("Database initialized.")
 
 # -------------------------
 # Create message
@@ -103,4 +124,6 @@ def get_messages():
 # Run server
 # -------------------------
 if __name__ == "__main__":
+    init_db()
     app.run(host="0.0.0.0", port=8000, debug=True)
+    print(app.url_map)

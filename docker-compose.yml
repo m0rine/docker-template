@@ -16,13 +16,13 @@ services:
     volumes:
       - type: volume
         source: postgres_data
-        target: /var/lib/postgres
+        target: /var/lib/postgresql
     secrets:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
   nginx:
     image: nginx:latest
-    container_name: template_frontend
+    container_name: template-frontend
     ports:
       - "80:80"
     volumes:
@@ -32,7 +32,7 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
-    container_name: template_backend
+    container_name: template-backend
     restart: always 
     environment:
       POSTGRES_HOST: template-db
