@@ -1,0 +1,60 @@
+# We are going to try and build separate frontend / backend service.
+# A simple example is a site that displays your IP on a button press
+# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a backend.
+# Services needed: Frontend: JS/HTML/CSS, Backend: Python, DB: PostgreSQL
+# 7/28 Note, might add pull_policy: missing, and image: <dockerhub location>, for redundancy when running in prod.
+services:
+  postgres:
+    image: postgres:18.4
+    container_name: template-db
+    restart: always
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/POSTGRES_USER
+      POSTGRES_PASSWORD_FILE: /run/secrets/POSTGRES_PASSWORD
+      POSTGRES_DB: "postgres"
+    ports:
+      - "5432:5432"
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql
+    secrets:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+  nginx:
+    container_name: template-frontend
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+      tags: 
+       - "danielfmorine/template-frontend:latest"
+    ports:
+      - "80:80"
+  backend:
+    container_name: template-backend
+    restart: always 
+    build:
+      context: ./backend/
+      dockerfile: Dockerfile
+      target: prod
+      tags: 
+       - "danielfmorine/template-backend:latest"
+    environment:
+      POSTGRES_HOST: template-db
+      POSTGRES_DB: "postgres"
+    ports:
+      - "8000:8000"
+    secrets:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+# Actually defining the secret from a file      
+secrets:
+  POSTGRES_USER:
+    file: secrets/postgres_user
+  POSTGRES_PASSWORD:
+    file: secrets/postgres_password
+volumes:
+  postgres_data:
+

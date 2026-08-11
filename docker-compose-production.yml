@@ -5,7 +5,7 @@
 # 7/28 Note, might add pull_policy: missing, and image: <dockerhub location>, for redundancy when running in prod.
 services:
   postgres:
-    image: postgres:18.4
+    image: docker.io/danielfmorine/template:database-latest
     container_name: template-db
     restart: always
     environment:
@@ -22,25 +22,15 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
   nginx:
+    image: docker.io/danielfmorine/template:frontend-latest
     container_name: template-frontend
     restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-      target: prod
-      tags: 
-       - "danielfmorine/template-frontend:latest"
     ports:
       - "80:80"
   backend:
+    image: docker.io/danielfmorine/template:backend-latest
     container_name: template-backend
     restart: always 
-    build:
-      context: ./backend/
-      dockerfile: Dockerfile
-      target: prod
-      tags: 
-       - "danielfmorine/template-backend:latest"
     environment:
       POSTGRES_HOST: template-db
       POSTGRES_DB: "postgres"
