@@ -2,6 +2,7 @@
 # A simple example is a site that displays your IP on a button press
 # And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a backend.
 # Services needed: Frontend: JS/HTML/CSS, Backend: Python, DB: PostgreSQL
+#
 services:
   postgres:
     image: postgres:18.4
@@ -32,6 +33,9 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - ./backend/src:/server
     container_name: template-backend
     restart: always 
     environment:

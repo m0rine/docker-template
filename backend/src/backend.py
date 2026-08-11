@@ -3,8 +3,6 @@ from flask_cors import CORS
 import psycopg2
 import os
 
-print("BACKEND PY IS RUNNING")
-
 app = Flask(__name__)
 CORS(app)
 
@@ -89,7 +87,7 @@ def create_message():
 
     msg_id = cur.fetchone()[0]
     conn.commit()
-
+    print("testing changes lol")
     cur.close()
     conn.close()
 
