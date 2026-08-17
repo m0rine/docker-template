@@ -1,6 +1,6 @@
-# We are going to try and build separate frontend / backend service.
+# We are going to try and build separate frontend / middleware service.
 # A simple example is a site that displays your IP on a button press
-# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a backend.
+# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a middleware.
 # Services needed: Frontend: JS/HTML/CSS, Backend: Python, DB: PostgreSQL
 #
 services:
@@ -29,14 +29,14 @@ services:
     volumes:
       - ./frontend/static:/usr/share/nginx/html
       - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
-  backend:
+  middleware:
     build:
-      context: ./backend/
+      context: ./middleware/
       dockerfile: Dockerfile
       target: dev
     volumes:
-      - ./backend/src:/server
-    container_name: template-backend
+      - ./middleware/src:/server
+    container_name: template-middleware
     restart: always 
     environment:
       POSTGRES_HOST: template-db

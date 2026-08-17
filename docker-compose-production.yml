@@ -1,6 +1,6 @@
-# We are going to try and build separate frontend / backend service.
+# We are going to try and build separate frontend / middleware service.
 # A simple example is a site that displays your IP on a button press
-# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a backend.
+# And saves it to a database.  Processing of a web request beyond simple HTML/CSS serving is required for this app, hence we need a middleware.
 # Services needed: Frontend: JS/HTML/CSS, Backend: Python, DB: PostgreSQL
 # 7/28 Note, might add pull_policy: missing, and image: <dockerhub location>, for redundancy when running in prod.
 services:
@@ -27,9 +27,9 @@ services:
     restart: always
     ports:
       - "80:80"
-  backend:
-    image: docker.io/danielfmorine/template:backend-latest
-    container_name: template-backend
+  middleware:
+    image: docker.io/danielfmorine/template:middleware-latest
+    container_name: template-middleware
     restart: always 
     environment:
       POSTGRES_HOST: template-db
