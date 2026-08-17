@@ -35,7 +35,7 @@ services:
       dockerfile: Dockerfile
       target: dev
     volumes:
-      - ./middleware/src:/server
+      - ./middleware/src:/server/src
     container_name: template-middleware
     restart: always 
     environment:
