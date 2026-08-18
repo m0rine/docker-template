@@ -1,4 +1,4 @@
-This is an example docker template for beginners.  It will contrast a simple manual setup for a web application with docker's containerization approach to show how you can dockerize yourself.
+This is an example docker template for beginners.  It will contrast a simple manual setup for a web application with docker's containerization approach to show how you can dockerize yourself.  The [wiki](https://github.com/Daniel-f-morine/docker-template/wiki) is probably what you want.
 
 
 # TODO
@@ -9,7 +9,7 @@ This is an example docker template for beginners.  It will contrast a simple man
 - Save messages persistently with Postgresql database DONE
 - Document how docker volumes are automatically destroyed in the postgres container, why, and how to fix it. <PLANNED, LOW PRIORITY>
 
-# Low priority
+# TODO Low priority
 - Document how to set postgres db user passwords with the postgres official docker images, Answer: Set the environment variable on db initalization.
 - Userland-proxy and IPTables rules, are they required on a more enterprise cloud environment to get real user IP? <NOT PLANNED>
 - Maybe documents the CORS stuff <NOT PLANNED>
