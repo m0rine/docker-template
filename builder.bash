@@ -1,54 +1,54 @@
-#TODO This bash script needs a refactor.
-# Make sure you docker login before using the push functions.
-# https://devhints.io/bash
+#!/usr/bin/env bash
+set -Eeuo pipefail
+echo "This script assumes you're already logged into dockerhub, and asks the username for tagging."
+echo "Set the DOCKER_USER environment variable to avoid having to manually input each time."
+# Configuration
+DOCKER_USER="${DOCKER_USER:-$(read -rp 'DockerHub username: ' USERNAME && echo "$USERNAME")}"
+PREFIX="docker.io/${DOCKER_USER}/template"
+POSTFIX="$(git log --format=%H -1)"
+MODE="${1:-all}"
 
-prefix="docker.io/danielfmorine/template"
-if [[ "$1" == "buildall" ]]; then
-	docker build --target prod -t "$prefix:frontend-latest" ./frontend
-	docker build --target prod -t "$prefix:middleware-latest" ./middleware
-	docker build -t "$prefix:database-latest" ./database
-	exit 0
-fi
-
-if [[ "$1" == "pushall" ]]; then
-	docker push "$prefix:frontend-latest"
-	docker push "$prefix:middleware-latest"
-	docker push "$prefix:database-latest"
-	exit 0
-fi
-
-if [[ -z "$1" || -z "$2" ]]; then
-	echo "Two arguments required, usage: 
-	./builder.bash <context [frontend,middleware,database]> <operation [build, push, buildall]> 
-	The build operation also tags with your third arg, optionally, or as <service>-template.
-	Also, you can one arg, buildall or one arg pushall to push/build all images.
-	"
-	exit 1
-fi
-
-if [[ "$1" != "database" && "$1" != "middleware" && "$1" != "frontend" ]]; then
-	echo "Image tag not valid, use [frontend,middleware,database]"
-	exit 1
-fi
-
-if [[ "$2" != "build" && "$2" != "push" ]]; then
-	echo "Operation not valid, use [build, push]."
-	exit 1
-fi
-
-context="./$1"
-operation="$2"
-tag="${3:-docker.io/danielfmorine/template:$1-latest}"
-target="prod"
-
-build() {
-	docker build --target $target -t $tag $context
+usage() {
+    echo "Usage: $0 [all|build|push]"
+    exit 1
 }
 
-push() {
-	docker push $tag
-}
-# call the function
-$operation
-exit 0
+case "$MODE" in
+    all|build|push) ;;
+    *) usage ;;
+esac
 
+IMAGES=("frontend:prod" "middleware:prod" "database:")
+
+build_image() {
+    local NAME="$1"
+    local TARGET="$2"
+    local TAGS=(-t "$PREFIX:$NAME-$POSTFIX" -t "$PREFIX:$NAME-latest")
+
+    echo "Building $NAME..."
+
+    local ARGS=(docker buildx build "${TAGS[@]}")
+    [[ -n "$TARGET" ]] && ARGS+=(--target "$TARGET")
+    ARGS+=("./$NAME")
+
+    "${ARGS[@]}"
+}
+
+push_image() {
+    local NAME="$1"
+
+    echo "Pushing $NAME..."
+    docker push "$PREFIX:$NAME-$POSTFIX"
+    docker push "$PREFIX:$NAME-latest"
+}
+
+for IMAGE in "${IMAGES[@]}"; do
+    NAME="${IMAGE%%:*}"
+    TARGET="${IMAGE#*:}"
+
+    [[ "$MODE" != "push" ]] && build_image "$NAME" "$TARGET"
+    [[ "$MODE" != "build" ]] && push_image "$NAME"
+done
+
+echo "Completed successfully! ($MODE)"
+echo "Commit: $POSTFIX"
